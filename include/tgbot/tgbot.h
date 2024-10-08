@@ -106,7 +106,7 @@
  * @defgroup tools
  *
  * @mainpage
- * [Go to GitHub](https://github.com/reo7sp/tgbot-cpp)
+ * [Go to GitHub](https://github.com/username000101/tgbot-cpp)
  *
  */
 

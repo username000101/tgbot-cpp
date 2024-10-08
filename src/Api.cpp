@@ -1,6 +1,7 @@
 #include "tgbot/Api.h"
 
 #include <chrono>
+#include <iostream>
 #include <thread>
 
 namespace TgBot {
@@ -2860,7 +2861,7 @@ boost::property_tree::ptree Api::sendRequest(const std::string& method, const st
                 std::string message = result.get("description", "");
                 size_t errorCode = result.get<size_t>("error_code", 0u);
 
-                throw TgException(message, static_cast<TgException::ErrorCode>(errorCode));
+                std::cout << "tgbot-cpp: " << __FILE__ << ":" << __LINE__ << " ==> " << message << std::endl;
             }
         } catch (...) {
             int max_retries = _httpClient.getRequestMaxRetries();
