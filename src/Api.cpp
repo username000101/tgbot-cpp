@@ -2859,9 +2859,8 @@ boost::property_tree::ptree Api::sendRequest(const std::string& method, const st
                 return result.get_child("result");
             } else {
                 std::string message = result.get("description", "");
-                size_t errorCode = result.get<size_t>("error_code", 0u);
-
                 std::cout << "tgbot-cpp: " << __FILE__ << ":" << __LINE__ << " ==> " << message << std::endl;
+                return result.get_child("result");
             }
         } catch (...) {
             int max_retries = _httpClient.getRequestMaxRetries();
