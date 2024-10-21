@@ -27,8 +27,8 @@ void TgLongPoll::start() {
     for (Update::Ptr& item : _updates) {
         if (item->updateId >= _lastUpdateId) {
             _lastUpdateId = item->updateId + 1;
+            _eventHandler->handleUpdate(item);
         }
-        _eventHandler->handleUpdate(item);
     }
 
     // confirm handled updates
