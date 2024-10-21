@@ -129,6 +129,8 @@ public:
      * @param listener Listener.
      */
     inline void onCallbackQuery(const CallbackQueryListener& listener){
+        if (!_onCallbackQueryListeners.empty())
+            _onCallbackQueryListeners.clear();
         _onCallbackQueryListeners.push_back(listener);
     }
 
