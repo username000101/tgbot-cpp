@@ -44,6 +44,8 @@ public:
     typedef std::function<void (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
     typedef std::function<void (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
 
+    typedef std::function<bool (const std::string&)> CallbackQueryVisitor;
+
     /**
      * @brief Registers listener which receives new incoming message of any kind - text, photo, sticker, etc.
      * @param listener Listener.
@@ -129,9 +131,19 @@ public:
      * @param listener Listener.
      */
     inline void onCallbackQuery(const CallbackQueryListener& listener){
-        if (!_onCallbackQueryListeners.empty())
-            _onCallbackQueryListeners.clear();
         _onCallbackQueryListeners.push_back(listener);
+    }
+
+    /**
+     * @brief Remove listener for callback queries
+     * @param listener Listener
+     *
+     */
+    inline void removeCallbackQueryListener(const CallbackQueryListener& listener){
+        for (auto currentListener = _onCallbackQueryListeners.begin(); currentListener != _onCallbackQueryListeners.end(); ++currentListener) {
+            if (*currentListener->target<void(*)(CallbackQuery::Ptr)>() == *listener.target<void(*)(CallbackQuery::Ptr)>())
+                _onCallbackQueryListeners.erase(currentListener);
+        }
     }
 
     /**
