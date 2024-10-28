@@ -131,19 +131,7 @@ public:
      * @param listener Listener.
      */
     inline void onCallbackQuery(const CallbackQueryListener& listener){
-        _onCallbackQueryListeners.push_back(listener);
-    }
-
-    /**
-     * @brief Remove listener for callback queries
-     * @param listener Listener
-     *
-     */
-    inline void removeCallbackQueryListener(const CallbackQueryListener& listener){
-        for (auto currentListener = _onCallbackQueryListeners.begin(); currentListener != _onCallbackQueryListeners.end(); ++currentListener) {
-            if (*currentListener->target<void(*)(CallbackQuery::Ptr)>() == *listener.target<void(*)(CallbackQuery::Ptr)>())
-                _onCallbackQueryListeners.erase(currentListener);
-        }
+        _onCallbackQueryListener = listener;
     }
 
     /**
@@ -223,7 +211,9 @@ private:
             return;
 
         for (const ListenerType& item : listeners) {
-            item(object);
+            if (item) {
+                item(object);
+            }
         }
     }
 
@@ -261,7 +251,7 @@ private:
     }
 
     inline void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-        broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListeners, result);
+        broadcast<CallbackQueryListener, CallbackQuery::Ptr>({ _onCallbackQueryListener }, result);
     }
 
     inline void broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
@@ -299,7 +289,7 @@ private:
     std::vector<MessageListener> _onEditedMessageListeners;
     std::vector<InlineQueryListener> _onInlineQueryListeners;
     std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
-    std::vector<CallbackQueryListener> _onCallbackQueryListeners;
+    CallbackQueryListener _onCallbackQueryListener;
     std::vector<ShippingQueryListener> _onShippingQueryListeners;
     std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
     std::vector<PollListener> _onPollListeners;
