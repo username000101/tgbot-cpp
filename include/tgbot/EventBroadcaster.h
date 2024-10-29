@@ -13,11 +13,12 @@
 #include "tgbot/types/ChatMemberUpdated.h"
 #include "tgbot/types/ChatJoinRequest.h"
 
-#include <functional>
+#include <iostream>
 #include <initializer_list>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
 
 namespace TgBot {
 
@@ -33,24 +34,22 @@ class TGBOT_API EventBroadcaster {
 friend EventHandler;
 
 public:
-    typedef std::function<void (const Message::Ptr)> MessageListener;
-    typedef std::function<void (const InlineQuery::Ptr)> InlineQueryListener;
-    typedef std::function<void (const ChosenInlineResult::Ptr)> ChosenInlineResultListener;
-    typedef std::function<void (const CallbackQuery::Ptr)> CallbackQueryListener;
-    typedef std::function<void (const ShippingQuery::Ptr)> ShippingQueryListener;
-    typedef std::function<void (const PreCheckoutQuery::Ptr)> PreCheckoutQueryListener;
-    typedef std::function<void (const Poll::Ptr)> PollListener;
-    typedef std::function<void (const PollAnswer::Ptr)> PollAnswerListener;
-    typedef std::function<void (const ChatMemberUpdated::Ptr)> ChatMemberUpdatedListener;
-    typedef std::function<void (const ChatJoinRequest::Ptr)> ChatJoinRequestListener;
-
-    typedef std::function<bool (const std::string&)> CallbackQueryVisitor;
+    typedef void(*MessageListener) (const Message::Ptr);
+    typedef void(*InlineQueryListener) (const InlineQuery::Ptr);
+    typedef void(*ChosenInlineResultListener) (const ChosenInlineResult::Ptr);
+    typedef void(*CallbackQueryListener) (const CallbackQuery::Ptr);
+    typedef void(*ShippingQueryListener) (const ShippingQuery::Ptr);
+    typedef void(*PreCheckoutQueryListener) (const PreCheckoutQuery::Ptr);
+    typedef void(*PollListener) (const Poll::Ptr);
+    typedef void(*PollAnswerListener) (const PollAnswer::Ptr);
+    typedef void(*ChatMemberUpdatedListener) (const ChatMemberUpdated::Ptr);
+    typedef void(*ChatJoinRequestListener) (const ChatJoinRequest::Ptr);
 
     /**
      * @brief Registers listener which receives new incoming message of any kind - text, photo, sticker, etc.
      * @param listener Listener.
      */
-    inline void onAnyMessage(const MessageListener& listener) {
+    inline void onAnyMessage(MessageListener listener) {
         _onAnyMessageListeners.push_back(listener);
     }
 
@@ -59,7 +58,7 @@ public:
      * @param commandName Command name which listener can handle.
      * @param listener Listener. Pass nullptr to remove listener of command
      */
-    inline void onCommand(const std::string& commandName, const MessageListener& listener) {
+    inline void onCommand(const std::string& commandName, MessageListener listener) {
         if (listener) {
             _onCommandListeners[commandName] = listener;
         } else {
@@ -72,7 +71,7 @@ public:
     * @param commandsList Commands names which listener can handle.
     * @param listener Listener. Pass nullptr to remove listener of commands
     */
-    inline void onCommand(const std::initializer_list<std::string>& commandsList, const MessageListener& listener) {
+    inline void onCommand(const std::initializer_list<std::string>& commandsList, MessageListener listener) {
         if (listener) {
             for (const auto& command : commandsList) {
                 _onCommandListeners[command] = listener;
@@ -88,7 +87,7 @@ public:
      * @brief Registers listener which receives all messages with commands (messages with leading '/' char) which haven't been handled by other listeners.
      * @param listener Listener.
      */
-    inline void onUnknownCommand(const MessageListener& listener) {
+    inline void onUnknownCommand(MessageListener listener) {
         _onUnknownCommandListeners.push_back(listener);
     }
 
@@ -96,7 +95,7 @@ public:
      * @brief Registers listener which receives all messages without commands (messages with no leading '/' char)
      * @param listener Listener.
      */
-    inline void onNonCommandMessage(const MessageListener& listener) {
+    inline void onNonCommandMessage(MessageListener listener) {
         _onNonCommandMessageListeners.push_back(listener);
     }
 
@@ -104,7 +103,7 @@ public:
      * @brief Registers listener which receives new versions of a message that is known to the bot and was edited
      * @param listener Listener.
      */
-    inline void onEditedMessage(const MessageListener& listener) {
+    inline void onEditedMessage(MessageListener listener) {
         _onEditedMessageListeners.push_back(listener);
     }
 
@@ -112,7 +111,7 @@ public:
      * @brief Registers listener which receives new incoming inline queries
      * @param listener Listener.
      */
-    inline void onInlineQuery(const InlineQueryListener& listener) {
+    inline void onInlineQuery(InlineQueryListener listener) {
         _onInlineQueryListeners.push_back(listener);
     }
 
@@ -122,7 +121,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onChosenInlineResult(const ChosenInlineResultListener& listener){
+    inline void onChosenInlineResult(ChosenInlineResultListener listener){
         _onChosenInlineResultListeners.push_back(listener);
     }
 
@@ -130,9 +129,13 @@ public:
      * @brief Registers listener which receives new incoming callback queries
      * @param listener Listener.
      */
-    inline void onCallbackQuery(const CallbackQueryListener& listener){
-        _onCallbackQueryListener = listener;
+    inline void onCallbackQuery(CallbackQueryListener listener){
+        if (!_onCallbackQueryListeners.empty())
+            _onCallbackQueryListeners.clear();
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Installed handler by address" << &listener << std::endl;
+        _onCallbackQueryListeners.push_back(listener);
     }
+
 
     /**
      * @brief Registers listener which receives new incoming shipping queries.
@@ -140,7 +143,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onShippingQuery(const ShippingQueryListener& listener){
+    inline void onShippingQuery(ShippingQueryListener listener){
         _onShippingQueryListeners.push_back(listener);
     }
 
@@ -150,7 +153,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onPreCheckoutQuery(const PreCheckoutQueryListener& listener){
+    inline void onPreCheckoutQuery(PreCheckoutQueryListener listener){
         _onPreCheckoutQueryListeners.push_back(listener);
     }
 
@@ -160,7 +163,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onPoll(const PollListener& listener){
+    inline void onPoll(PollListener listener){
         _onPollListeners.push_back(listener);
     }
 
@@ -170,7 +173,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onPollAnswer(const PollAnswerListener& listener){
+    inline void onPollAnswer(PollAnswerListener listener){
         _onPollAnswerListeners.push_back(listener);
     }
 
@@ -180,7 +183,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onMyChatMember(const ChatMemberUpdatedListener& listener){
+    inline void onMyChatMember(ChatMemberUpdatedListener listener){
         _onMyChatMemberListeners.push_back(listener);
     }
 
@@ -190,7 +193,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onChatMember(const ChatMemberUpdatedListener& listener){
+    inline void onChatMember(ChatMemberUpdatedListener listener){
         _onChatMemberListeners.push_back(listener);
     }
 
@@ -200,7 +203,7 @@ public:
      * 
      * @param listener Listener.
      */
-    inline void onChatJoinRequest(const ChatJoinRequestListener& listener){
+    inline void onChatJoinRequest(ChatJoinRequestListener listener){
         _onChatJoinRequestListeners.push_back(listener);
     }
 
@@ -209,11 +212,15 @@ private:
     inline void broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
         if (!object)
             return;
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": In this section" << std::endl;
 
-        for (const ListenerType& item : listeners) {
-            if (item) {
-                item(object);
-            }
+        for (auto& iter : listeners) {
+            if (!iter)
+                std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Invalid handler provided" << std::endl;
+            else if (!std::is_invocable_v<decltype(iter), CallbackQuery::Ptr>)
+                std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Non-invocable object provided(" << typeid(iter).name() << std::endl;
+            else
+                iter(object);
         }
     }
 
@@ -251,7 +258,8 @@ private:
     }
 
     inline void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-        broadcast<CallbackQueryListener, CallbackQuery::Ptr>({ _onCallbackQueryListener }, result);
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Handle CallbackQuery with text \"" << result->data << "\"" << std::endl;
+        broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListeners, result);
     }
 
     inline void broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
@@ -289,7 +297,7 @@ private:
     std::vector<MessageListener> _onEditedMessageListeners;
     std::vector<InlineQueryListener> _onInlineQueryListeners;
     std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
-    CallbackQueryListener _onCallbackQueryListener;
+    std::vector<CallbackQueryListener> _onCallbackQueryListeners;
     std::vector<ShippingQueryListener> _onShippingQueryListeners;
     std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
     std::vector<PollListener> _onPollListeners;
