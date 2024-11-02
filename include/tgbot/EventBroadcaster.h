@@ -204,8 +204,7 @@ public:
     inline void onChatJoinRequest(ChatJoinRequestListener listener){
         _onChatJoinRequestListener = listener;
     }
-    if (!_onCallbackQueryListeners.empty())
-        _onCallbackQueryListeners.clear();
+
 private:
     template<typename ListenerType, typename ObjectType>
     inline void broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
