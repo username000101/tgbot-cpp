@@ -289,7 +289,6 @@ private:
     std::vector<MessageListener> _onEditedMessageListeners;
     std::vector<InlineQueryListener> _onInlineQueryListeners;
     std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
-    CallbackQueryListener _onCallbackQueryListener;
     std::vector<ShippingQueryListener> _onShippingQueryListeners;
     std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
     std::vector<PollListener> _onPollListeners;
