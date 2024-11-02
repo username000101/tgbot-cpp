@@ -31,7 +31,7 @@ class EventHandler;
  */
 class TGBOT_API EventBroadcaster {
 
-friend EventHandler;
+    friend EventHandler;
 
 public:
     typedef void(*MessageListener) (const Message::Ptr);
@@ -49,13 +49,8 @@ public:
      * @brief Registers listener which receives new incoming message of any kind - text, photo, sticker, etc.
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onAnyMessage(MessageListener listener) {
-        _onAnyMessageListeners.push_back(listener);
-=======
     inline void onAnyMessage(const MessageListener& listener) {
         _onAnyMessageListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
@@ -92,67 +87,42 @@ public:
      * @brief Registers listener which receives all messages with commands (messages with leading '/' char) which haven't been handled by other listeners.
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onUnknownCommand(MessageListener listener) {
-        _onUnknownCommandListeners.push_back(listener);
-=======
     inline void onUnknownCommand(const MessageListener& listener) {
         _onUnknownCommandListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives all messages without commands (messages with no leading '/' char)
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onNonCommandMessage(MessageListener listener) {
-        _onNonCommandMessageListeners.push_back(listener);
-=======
     inline void onNonCommandMessage(const MessageListener& listener) {
         _onNonCommandMessageListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives new versions of a message that is known to the bot and was edited
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onEditedMessage(MessageListener listener) {
-        _onEditedMessageListeners.push_back(listener);
-=======
     inline void onEditedMessage(const MessageListener& listener) {
         _onEditedMessageListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives new incoming inline queries
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onInlineQuery(InlineQueryListener listener) {
-        _onInlineQueryListeners.push_back(listener);
-=======
     inline void onInlineQuery(const InlineQueryListener& listener) {
         _onInlineQueryListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives the results of an inline query that was chosen by a user and sent to their chat partner.
      * Please see https://core.telegram.org/bots/inline#collecting-feedback for details on how to enable these updates for your bot.
-     * 
+     *
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onChosenInlineResult(ChosenInlineResultListener listener){
-        _onChosenInlineResultListeners.push_back(listener);
-=======
     inline void onChosenInlineResult(const ChosenInlineResultListener& listener){
         _onChosenInlineResultListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
@@ -169,37 +139,27 @@ public:
     /**
      * @brief Registers listener which receives new incoming shipping queries.
      * Only for invoices with flexible price
-     * 
+     *
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onShippingQuery(ShippingQueryListener listener){
-        _onShippingQueryListeners.push_back(listener);
-=======
     inline void onShippingQuery(const ShippingQueryListener& listener){
         _onShippingQueryListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives new incoming pre-checkout queries.
      * Contains full information about checkout
-     * 
+     *
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onPreCheckoutQuery(PreCheckoutQueryListener listener){
-        _onPreCheckoutQueryListeners.push_back(listener);
-=======
     inline void onPreCheckoutQuery(const PreCheckoutQueryListener& listener){
         _onPreCheckoutQueryListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives new poll states.
      * Bots receive only updates about stopped polls and polls, which are sent by the bot
-     * 
+     *
      * @param listener Listener.
      */
     inline void onPoll(PollListener listener){
@@ -209,7 +169,7 @@ public:
     /**
      * @brief Registers listener which receives an answer if a user changed their answer in a non-anonymous poll.
      * Bots receive new votes only in polls that were sent by the bot itself.
-     * 
+     *
      * @param listener Listener.
      */
     inline void onPollAnswer(PollAnswerListener listener){
@@ -219,46 +179,32 @@ public:
     /**
      * @brief Registers listener which receives the bot's chat member status if it was updated in a chat.
      * For private chats, this update is received only when the bot is blocked or unblocked by the user.
-     * 
+     *
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
-    inline void onMyChatMember(ChatMemberUpdatedListener listener){
-        _onMyChatMemberListeners.push_back(listener);
-=======
+
     inline void onMyChatMember(const ChatMemberUpdatedListener& listener){
         _onMyChatMemberListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives a status if a chat member's status was updated in a chat.
      * The bot must be an administrator in the chat and must explicitly specify “chat_member” in the list of allowedUpdates to receive these updates.
-     * 
+     *
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
     inline void onChatMember(ChatMemberUpdatedListener listener){
-        _onChatMemberListeners.push_back(listener);
-=======
-    inline void onChatMember(const ChatMemberUpdatedListener& listener){
         _onChatMemberListener = listener;
->>>>>>> Stashed changes
     }
 
     /**
      * @brief Registers listener which receives requests to join the chat.
      * The bot must have the canInviteUsers administrator right in the chat to receive these updates.
-     * 
+     *
      * @param listener Listener.
      */
-<<<<<<< Updated upstream
     inline void onChatJoinRequest(ChatJoinRequestListener listener){
-        _onChatJoinRequestListeners.push_back(listener);
-=======
-    inline void onChatJoinRequest(const ChatJoinRequestListener& listener){
         _onChatJoinRequestListener = listener;
->>>>>>> Stashed changes
     }
 
 private:
@@ -310,11 +256,7 @@ private:
     }
 
     inline void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-<<<<<<< Updated upstream
-        broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListeners, result);
-=======
         broadcast<CallbackQueryListener, CallbackQuery::Ptr>({_onCallbackQueryListener}, result);
->>>>>>> Stashed changes
     }
 
     inline void broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
@@ -347,7 +289,6 @@ private:
 
     MessageListener _onAnyMessageListener;
     std::unordered_map<std::string, MessageListener> _onCommandListeners;
-<<<<<<< Updated upstream
     std::vector<MessageListener> _onUnknownCommandListeners;
     std::vector<MessageListener> _onNonCommandMessageListeners;
     std::vector<MessageListener> _onEditedMessageListeners;
@@ -356,7 +297,6 @@ private:
     std::vector<CallbackQueryListener> _onCallbackQueryListeners;
     std::vector<ShippingQueryListener> _onShippingQueryListeners;
     std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
-=======
     MessageListener _onUnknownCommandListener;
     MessageListener _onNonCommandMessageListener;
     MessageListener _onEditedMessageListener;
@@ -365,7 +305,6 @@ private:
     ChosenInlineResultListener _onChosenInlineResultListener;
     ShippingQueryListener _onShippingQueryListener;
     PreCheckoutQueryListener _onPreCheckoutQueryListener;
->>>>>>> Stashed changes
     std::vector<PollListener> _onPollListeners;
     std::vector<PollAnswerListener> _onPollAnswerListeners;
     ChatMemberUpdatedListener _onMyChatMemberListener;
