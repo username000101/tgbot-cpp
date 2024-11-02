@@ -132,7 +132,6 @@ public:
     inline void onCallbackQuery(CallbackQueryListener listener){
         if (!_onCallbackQueryListeners.empty())
             _onCallbackQueryListeners.clear();
-        std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Installed handler by address" << &listener << std::endl;
         _onCallbackQueryListeners.push_back(listener);
     }
 
@@ -212,8 +211,6 @@ private:
     inline void broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
         if (!object)
             return;
-        std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": In this section" << std::endl;
-
         for (auto& iter : listeners) {
             if (!iter)
                 std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Invalid handler provided" << std::endl;
@@ -258,7 +255,6 @@ private:
     }
 
     inline void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-        std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Handle CallbackQuery with text \"" << result->data << "\"" << std::endl;
         broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListeners, result);
     }
 
