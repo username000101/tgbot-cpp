@@ -130,9 +130,7 @@ public:
      * @param listener Listener.
      */
     inline void onCallbackQuery(CallbackQueryListener listener){
-        if (!_onCallbackQueryListeners.empty())
-            _onCallbackQueryListeners.clear();
-        _onCallbackQueryListeners.push_back(listener);
+        _onCallbackQueryListener = listener;
     }
 
 
@@ -206,7 +204,8 @@ public:
     inline void onChatJoinRequest(ChatJoinRequestListener listener){
         _onChatJoinRequestListener = listener;
     }
-
+    if (!_onCallbackQueryListeners.empty())
+        _onCallbackQueryListeners.clear();
 private:
     template<typename ListenerType, typename ObjectType>
     inline void broadcast(const std::vector<ListenerType>& listeners, const ObjectType object) const {
@@ -289,14 +288,6 @@ private:
 
     MessageListener _onAnyMessageListener;
     std::unordered_map<std::string, MessageListener> _onCommandListeners;
-    std::vector<MessageListener> _onUnknownCommandListeners;
-    std::vector<MessageListener> _onNonCommandMessageListeners;
-    std::vector<MessageListener> _onEditedMessageListeners;
-    std::vector<InlineQueryListener> _onInlineQueryListeners;
-    std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
-    std::vector<CallbackQueryListener> _onCallbackQueryListeners;
-    std::vector<ShippingQueryListener> _onShippingQueryListeners;
-    std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
     MessageListener _onUnknownCommandListener;
     MessageListener _onNonCommandMessageListener;
     MessageListener _onEditedMessageListener;
