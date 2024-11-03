@@ -211,10 +211,11 @@ private:
         if (!object)
             return;
         for (auto& iter : listeners) {
-             if (!std::is_invocable_v<decltype(iter), decltype(object)>)
+            if (!std::is_invocable_v<decltype(iter), decltype(object)> || !iter) {
                 std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Non-invokable handler provided" << std::endl;
-            else
+            } else {
                 iter(object);
+            }
         }
     }
 
