@@ -211,10 +211,8 @@ private:
         if (!object)
             return;
         for (auto& iter : listeners) {
-            if (!iter)
-                std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Invalid handler provided" << std::endl;
-            else if (!std::is_invocable_v<decltype(iter), CallbackQuery::Ptr>)
-                std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Non-invocable object provided(" << typeid(iter).name() << std::endl;
+             if (!std::is_invocable_v<decltype(iter), decltype(object)>)
+                std::cout << "tgbot-cpp: " << __FUNCTION__ << ":" << __LINE__ << ": Non-invokable handler provided" << std::endl;
             else
                 iter(object);
         }
