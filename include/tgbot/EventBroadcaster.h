@@ -13,6 +13,7 @@
 #include "tgbot/types/ChatMemberUpdated.h"
 #include "tgbot/types/ChatJoinRequest.h"
 
+#include <iostream>
 #include <functional>
 #include <initializer_list>
 #include <string>
@@ -51,7 +52,7 @@ public:
      * @param listener Listener.
      */
     inline void onAnyMessage(const MessageListener& listener) {
-        _onAnyMessageListeners.push_back(listener);
+        _onAnyMessageListener = listener;
     }
 
     /**
@@ -97,7 +98,7 @@ public:
      * @param listener Listener.
      */
     inline void onNonCommandMessage(const MessageListener& listener) {
-        _onNonCommandMessageListeners.push_back(listener);
+        _onNonCommandMessageListener = listener;
     }
 
     /**
@@ -105,7 +106,7 @@ public:
      * @param listener Listener.
      */
     inline void onEditedMessage(const MessageListener& listener) {
-        _onEditedMessageListeners.push_back(listener);
+        _onEditedMessageListener = listener;
     }
 
     /**
@@ -113,7 +114,7 @@ public:
      * @param listener Listener.
      */
     inline void onInlineQuery(const InlineQueryListener& listener) {
-        _onInlineQueryListeners.push_back(listener);
+        _onInlineQueryListener = listener;
     }
 
     /**
@@ -211,14 +212,26 @@ private:
             return;
 
         for (const ListenerType& item : listeners) {
-            if (item) {
+            if (item)
                 item(object);
-            }
+            else
+                std::cout << "tgbot-cpp: non invokable listener" << std::endl;
         }
     }
 
+    template <typename ListenerType, typename ObjectType>
+    inline void broadcast(const ListenerType& listener, const ObjectType object) const {
+        if (!object)
+            return;
+
+        if (listener)
+            listener(object);
+        else
+            std::cout << "tgbot-cpp: non invokable listener" << std::endl;
+    }
+
     inline void broadcastAnyMessage(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(_onAnyMessageListeners, message);
+        broadcast<MessageListener, Message::Ptr>(_onAnyMessageListener, message);
     }
 
     inline bool broadcastCommand(const std::string& command, const Message::Ptr& message) const {
@@ -235,15 +248,15 @@ private:
     }
 
     inline void broadcastNonCommandMessage(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(_onNonCommandMessageListeners, message);
+        broadcast<MessageListener, Message::Ptr>(_onNonCommandMessageListener, message);
     }
 
     inline void broadcastEditedMessage(const Message::Ptr& message) const {
-        broadcast<MessageListener, Message::Ptr>(_onEditedMessageListeners, message);
+        broadcast<MessageListener, Message::Ptr>(_onEditedMessageListener, message);
     }
 
     inline void broadcastInlineQuery(const InlineQuery::Ptr& query) const {
-        broadcast<InlineQueryListener, InlineQuery::Ptr>(_onInlineQueryListeners, query);
+        broadcast<InlineQueryListener, InlineQuery::Ptr>(_onInlineQueryListener, query);
     }
 
     inline void broadcastChosenInlineResult(const ChosenInlineResult::Ptr& result) const {
@@ -251,7 +264,7 @@ private:
     }
 
     inline void broadcastCallbackQuery(const CallbackQuery::Ptr& result) const {
-        broadcast<CallbackQueryListener, CallbackQuery::Ptr>({ _onCallbackQueryListener }, result);
+        broadcast<CallbackQueryListener, CallbackQuery::Ptr>(_onCallbackQueryListener, result);
     }
 
     inline void broadcastShippingQuery(const ShippingQuery::Ptr& result) const {
@@ -282,12 +295,13 @@ private:
         broadcast<ChatJoinRequestListener, ChatJoinRequest::Ptr>(_onChatJoinRequestListeners, result);
     }
 
-    std::vector<MessageListener> _onAnyMessageListeners;
+    MessageListener _onAnyMessageListener;
     std::unordered_map<std::string, MessageListener> _onCommandListeners;
     std::vector<MessageListener> _onUnknownCommandListeners;
-    std::vector<MessageListener> _onNonCommandMessageListeners;
-    std::vector<MessageListener> _onEditedMessageListeners;
-    std::vector<InlineQueryListener> _onInlineQueryListeners;
+    MessageListener _onNonCommandMessageListener;
+    MessageListener _onEditedMessageListener;
+    InlineQueryListener _onInlineQueryListener;
+    CallbackQueryListener _onCallbackQueryListener;
     std::vector<ChosenInlineResultListener> _onChosenInlineResultListeners;
     std::vector<ShippingQueryListener> _onShippingQueryListeners;
     std::vector<PreCheckoutQueryListener> _onPreCheckoutQueryListeners;
