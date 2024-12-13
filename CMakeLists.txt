@@ -97,10 +97,18 @@ if (WIN32)
 endif()
 
 # building project
-add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
-target_include_directories(${PROJECT_NAME} PUBLIC 
-                           $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-                           $<INSTALL_INTERFACE:include>)
+if (BUILD_SHARED_LIBS)
+    add_library(${PROJECT_NAME} SHARED ${SRC_LIST})
+    target_include_directories(${PROJECT_NAME} PUBLIC
+                               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                               $<INSTALL_INTERFACE:include>)
+else()
+    add_library(${PROJECT_NAME} STATIC ${SRC_LIST})
+    target_include_directories(${PROJECT_NAME} PUBLIC
+                               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+                               $<INSTALL_INTERFACE:include>)
+endif()
+
 target_link_libraries(${PROJECT_NAME} ${LIB_LIST})
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}
@@ -134,8 +142,4 @@ if(BUILD_DOCUMENTATION)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM)
         install(DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/doc/html/ TYPE DOC)
-endif()
-
-if(BUILD_SHARED_LIBS)
-    add_definitions(-DTGBOT_DLL)
 endif()
