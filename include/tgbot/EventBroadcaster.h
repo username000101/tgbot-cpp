@@ -214,8 +214,6 @@ private:
         for (const ListenerType& item : listeners) {
             if (item)
                 item(object);
-            else
-                std::cout << "tgbot-cpp: non invokable listener" << std::endl;
         }
     }
 
@@ -226,8 +224,6 @@ private:
 
         if (listener)
             listener(object);
-        else
-            std::cout << "tgbot-cpp: non invokable listener" << std::endl;
     }
 
     inline void broadcastAnyMessage(const Message::Ptr& message) const {
