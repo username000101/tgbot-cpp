@@ -1,5 +1,7 @@
 #include "tgbot/TgTypeParser.h"
 
+#include <iostream>
+
 namespace TgBot {
 
 Update::Ptr TgTypeParser::parseJsonAndGetUpdate(const boost::property_tree::ptree& data) const {
@@ -268,6 +270,11 @@ std::string TgTypeParser::parseChat(const Chat::Ptr& object) const {
 }
 
 Message::Ptr TgTypeParser::parseJsonAndGetMessage(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: parseJsonAndGetMessage: empty property tree provided" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<Message>());
     result->messageId = data.get<std::int32_t>("message_id", 0);
     result->messageThreadId = data.get<std::int32_t>("message_thread_id", 0);
