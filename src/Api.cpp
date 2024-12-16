@@ -2860,7 +2860,8 @@ boost::property_tree::ptree Api::sendRequest(const std::string& method, const st
             } else {
                 std::string message = result.get("description", "");
                 std::cout << "tgbot-cpp: " << __FILE__ << ":" << __LINE__ << " ==> " << message << std::endl;
-                return result.get_child("result");
+                result.clear();
+                return result;
             }
         } catch (...) {
             int max_retries = _httpClient.getRequestMaxRetries();

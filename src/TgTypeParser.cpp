@@ -5,6 +5,11 @@
 namespace TgBot {
 
 Update::Ptr TgTypeParser::parseJsonAndGetUpdate(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<Update>());
     result->updateId = data.get<std::int32_t>("update_id", 0);
     result->message = tryParseJson<Message>(&TgTypeParser::parseJsonAndGetMessage, data, "message");
@@ -67,6 +72,10 @@ std::string TgTypeParser::parseUpdate(const Update::Ptr& object) const {
 }
 
 WebhookInfo::Ptr TgTypeParser::parseJsonAndGetWebhookInfo(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
     auto result(std::make_shared<WebhookInfo>());
     result->url = data.get<std::string>("url", "");
     result->hasCustomCertificate = data.get<bool>("has_custom_certificate", false);
@@ -107,6 +116,11 @@ std::string TgTypeParser::parseWebhookInfo(const WebhookInfo::Ptr& object) const
 }
 
 User::Ptr TgTypeParser::parseJsonAndGetUser(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<User>());
     result->id = data.get<std::int64_t>("id", 0);
     result->isBot = data.get<bool>("is_bot", false);
@@ -147,6 +161,11 @@ std::string TgTypeParser::parseUser(const User::Ptr& object) const {
 }
 
 Chat::Ptr TgTypeParser::parseJsonAndGetChat(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<Chat>());
     result->id = data.get<std::int64_t>("id", 0);
     std::string type = data.get<std::string>("type", "");
@@ -271,7 +290,7 @@ std::string TgTypeParser::parseChat(const Chat::Ptr& object) const {
 
 Message::Ptr TgTypeParser::parseJsonAndGetMessage(const boost::property_tree::ptree& data) const {
     if (data.empty()) {
-        std::cout << "tgbot-cpp: parseJsonAndGetMessage: empty property tree provided" << std::endl;
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
         return nullptr;
     }
 
@@ -451,6 +470,11 @@ std::string TgTypeParser::parseMessage(const Message::Ptr& object) const {
 }
 
 MessageId::Ptr TgTypeParser::parseJsonAndGetMessageId(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<MessageId>());
     result->messageId = data.get<std::int32_t>("message_id", 0);
     return result;
@@ -469,6 +493,11 @@ std::string TgTypeParser::parseMessageId(const MessageId::Ptr& object) const {
 }
 
 InaccessibleMessage::Ptr TgTypeParser::parseJsonAndGetInaccessibleMessage(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<InaccessibleMessage>());
     result->chat = tryParseJson<Chat>(&TgTypeParser::parseJsonAndGetChat, data, "chat");
     result->messageId = data.get<std::int32_t>("message_id", 0);
@@ -491,6 +520,11 @@ std::string TgTypeParser::parseInaccessibleMessage(const InaccessibleMessage::Pt
 }
 
 MessageEntity::Ptr TgTypeParser::parseJsonAndGetMessageEntity(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<MessageEntity>());
     std::string type = data.get<std::string>("type", "");
     if (type == "mention") {
@@ -594,6 +628,11 @@ std::string TgTypeParser::parseMessageEntity(const MessageEntity::Ptr& object) c
 }
 
 TextQuote::Ptr TgTypeParser::parseJsonAndGetTextQuote(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<TextQuote>());
     result->text = data.get<std::string>("text", "");
     result->entities = parseJsonAndGetArray<MessageEntity>(&TgTypeParser::parseJsonAndGetMessageEntity, data, "entities");
@@ -618,6 +657,11 @@ std::string TgTypeParser::parseTextQuote(const TextQuote::Ptr& object) const {
 }
 
 ExternalReplyInfo::Ptr TgTypeParser::parseJsonAndGetExternalReplyInfo(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<ExternalReplyInfo>());
     result->origin = tryParseJson<MessageOrigin>(&TgTypeParser::parseJsonAndGetMessageOrigin, data, "origin");
     result->chat = tryParseJson<Chat>(&TgTypeParser::parseJsonAndGetChat, data, "chat");
@@ -680,6 +724,11 @@ std::string TgTypeParser::parseExternalReplyInfo(const ExternalReplyInfo::Ptr& o
 }
 
 ReplyParameters::Ptr TgTypeParser::parseJsonAndGetReplyParameters(const boost::property_tree::ptree& data) const {
+    if (data.empty()) {
+        std::cout << "tgbot-cpp: " << __FUNCTION__ << ": data is empty" << std::endl;
+        return nullptr;
+    }
+
     auto result(std::make_shared<ReplyParameters>());
     result->messageId = data.get<std::int32_t>("message_id", 0);
     result->chatId = data.get<std::int64_t>("chat_id", 0);
